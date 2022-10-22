@@ -1,3 +1,3 @@
-module instantiate.co.nz/m/v2
+module monkey-interpreter
 
 go 1.18
