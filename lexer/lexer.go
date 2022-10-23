@@ -26,6 +26,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.ASSIGN, l.ch)
 	case '+':
 		tok = token.New(token.PLUS, l.ch)
+	case '(':
+		tok = token.New(token.LPAREN, l.ch)
 	}
 
 	l.readChar()

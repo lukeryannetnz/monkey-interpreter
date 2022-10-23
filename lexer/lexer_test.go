@@ -16,6 +16,7 @@ func TestNextToken(t *testing.T) {
 	}{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
+		{token.LPAREN, "("},
 	}
 
 	l := New(input)
