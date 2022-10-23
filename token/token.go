@@ -1,3 +1,4 @@
+// Package token provides definitions of tokens available in the monkey programming language.
 package token
 
 type TokenType string

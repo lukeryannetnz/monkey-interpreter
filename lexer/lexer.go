@@ -1,3 +1,6 @@
+// Package lexer implements functionality for converting fragments of the monkey programming language into tokens.
+//
+// For definitions of the tokens available in the monkey language see the [token] package.
 package lexer
 
 import "monkey-interpreter/token"
