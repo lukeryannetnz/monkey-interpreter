@@ -8,7 +8,7 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `=+(){},;
-	let dog = 5`
+		let dog = 5`
 
 	tests := []struct {
 		expectedType token.TokenType
@@ -25,6 +25,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.LET, "let"},
 		{token.IDENT, "dog"},
+		{token.ASSIGN, "="},
 		{token.INT, "5"},
 	}
 

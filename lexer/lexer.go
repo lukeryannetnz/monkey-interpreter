@@ -20,6 +20,7 @@ func New(input string) *Lexer {
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+	l.skipWhitespace()
 
 	switch l.ch {
 	case '=':
@@ -38,10 +39,42 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.COMMA, l.ch)
 	case ';':
 		tok = token.New(token.SEMICOLON, l.ch)
+	default:
+		literal := l.readLiteral()
+		tok = token.FindTokenType(literal)
 	}
 
 	l.readChar()
 	return tok
+}
+
+func isWhitespace(ch byte) bool {
+	// ascii for tab, line feed, carriage return and space
+	return ch == 9 || ch == 10 || ch == 13 || ch == 32
+}
+
+func (l *Lexer) skipWhitespace() {
+	if isWhitespace(l.ch) {
+		l.readChar()
+		l.skipWhitespace()
+	}
+}
+
+func (l *Lexer) readLiteral() string {
+	literal := ""
+
+	for l.ch != 0 {
+		literal += string(l.ch)
+
+		peek := l.peekChar()
+		if isWhitespace(peek) {
+			return literal
+		}
+
+		l.readChar()
+	}
+
+	return literal
 }
 
 func (l *Lexer) readChar() {
@@ -53,4 +86,12 @@ func (l *Lexer) readChar() {
 
 	l.position = l.readPosition
 	l.readPosition++
+}
+
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition]
+	}
 }
