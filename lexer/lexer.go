@@ -3,7 +3,9 @@
 // For definitions of the tokens available in the monkey language see the [token] package.
 package lexer
 
-import "monkey-interpreter/token"
+import (
+	"monkey-interpreter/token"
+)
 
 type Lexer struct {
 	input        string
@@ -20,13 +22,42 @@ func New(input string) *Lexer {
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
-	l.skipWhitespace()
+	l.eatWhitespace()
 
 	switch l.ch {
+	case 0:
+		tok.Type = token.EOF
+		tok.Literal = ""
 	case '=':
-		tok = token.New(token.ASSIGN, l.ch)
+		peek := l.peekChar()
+		if peek == '=' {
+			tok.Type = token.EQ
+			tok.Literal = string(l.ch) + string(peek)
+			l.readChar()
+		} else {
+			tok = token.New(token.ASSIGN, l.ch)
+		}
 	case '+':
 		tok = token.New(token.PLUS, l.ch)
+	case '-':
+		tok = token.New(token.MINUS, l.ch)
+	case '!':
+		peek := l.peekChar()
+		if peek == '=' {
+			tok.Type = token.NOT_EQ
+			tok.Literal = string(l.ch) + string(peek)
+			l.readChar()
+		} else {
+			tok = token.New(token.BANG, l.ch)
+		}
+	case '*':
+		tok = token.New(token.ASTERISK, l.ch)
+	case '/':
+		tok = token.New(token.SLASH, l.ch)
+	case '<':
+		tok = token.New(token.LT, l.ch)
+	case '>':
+		tok = token.New(token.GT, l.ch)
 	case '(':
 		tok = token.New(token.LPAREN, l.ch)
 	case ')':
@@ -49,14 +80,14 @@ func (l *Lexer) NextToken() token.Token {
 }
 
 func isWhitespace(ch byte) bool {
-	// ascii for tab, line feed, carriage return and space
+	// ascii values for tab, line feed, carriage return and space
 	return ch == 9 || ch == 10 || ch == 13 || ch == 32
 }
 
-func (l *Lexer) skipWhitespace() {
+func (l *Lexer) eatWhitespace() {
 	if isWhitespace(l.ch) {
 		l.readChar()
-		l.skipWhitespace()
+		l.eatWhitespace()
 	}
 }
 
@@ -67,7 +98,7 @@ func (l *Lexer) readLiteral() string {
 		literal += string(l.ch)
 
 		peek := l.peekChar()
-		if isWhitespace(peek) {
+		if isWhitespace(peek) || token.IsDelimiter(peek) {
 			return literal
 		}
 

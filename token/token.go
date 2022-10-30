@@ -3,7 +3,6 @@ package token
 
 import (
 	"strconv"
-	"strings"
 )
 
 type TokenType string
@@ -11,6 +10,25 @@ type TokenType string
 type Token struct {
 	Type    TokenType
 	Literal string
+}
+
+var keywords = map[string]TokenType{
+	"fn":     FUNCTION,
+	"let":    LET,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
+}
+
+var delimiters = map[string]TokenType{
+	",": COMMA,
+	";": SEMICOLON,
+	"(": LPAREN,
+	")": RPAREN,
+	"{": LBRACE,
+	"}": RBRACE,
 }
 
 func New(tokenType TokenType, ch byte) Token {
@@ -22,11 +40,17 @@ func FindTokenType(literal string) Token {
 		return Token{Type: INT, Literal: literal}
 	}
 
-	if strings.EqualFold(LET, literal) {
-		return Token{Type: LET, Literal: literal}
-	} else {
-		return Token{Type: IDENT, Literal: literal}
+	if tok, ok := keywords[literal]; ok {
+		return Token{Type: tok, Literal: literal}
 	}
+
+	return Token{Type: IDENT, Literal: literal}
+}
+
+func IsDelimiter(literal byte) bool {
+	_, ok := delimiters[string(literal)]
+
+	return ok
 }
 
 const (
@@ -38,8 +62,16 @@ const (
 	INT   = "INT"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+	LT       = "<"
+	GT       = ">"
+	EQ       = "=="
+	NOT_EQ   = "!="
 
 	// Delimiters
 	COMMA     = ","
@@ -52,4 +84,9 @@ const (
 	// Keywords
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
 )
