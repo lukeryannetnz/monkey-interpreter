@@ -1,4 +1,4 @@
-// Package parser contains functionality syntactically analyse and convert tokens of the monkey programming language into the abstract syntax tree (AST) data structure.
+// Package parser contains functionality to syntactically analyse and convert tokens of the monkey programming language into the abstract syntax tree (AST) data structure.
 //
 // For more information on the AST, see the [ast] package.
 //
@@ -12,8 +12,7 @@ import (
 )
 
 type Parser struct {
-	l *lexer.Lexer
-
+	l         *lexer.Lexer
 	curToken  token.Token
 	peekToken token.Token
 }
@@ -33,6 +32,6 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) ParseProgramme() *ast.Program {
+func (p *Parser) ParseProgram() *ast.Program {
 	return nil
 }
