@@ -58,10 +58,18 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.LET:
 		return p.parseLetStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
 	default:
-		p.errors = append(p.errors, "failed to parse statement")
+		p.errors = append(p.errors, "failed to parse statement, found unexpected token of type: "+p.curToken.Literal)
 		return nil
 	}
+}
+
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: p.curToken}
+
+	return stmt
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
