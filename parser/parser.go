@@ -59,6 +59,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.LET:
 		return p.parseLetStatement()
 	default:
+		p.errors = append(p.errors, "failed to parse statement")
 		return nil
 	}
 }
@@ -67,12 +68,14 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	stmt := &ast.LetStatement{Token: p.curToken}
 
 	if !p.expectPeek(token.IDENT) {
+		p.errors = append(p.errors, "unexpected token, expected IDENT")
 		return nil
 	}
 
 	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
 	if !p.expectPeek(token.ASSIGN) {
+		p.errors = append(p.errors, "unexpected token, expected ASSIGN")
 		return nil
 	}
 
