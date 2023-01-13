@@ -73,7 +73,7 @@ func TestReturnStatement(t *testing.T) {
 	input := `
 return 5;
 return 10;
-return 993322;
+return add(15);
 `
 	l := lexer.New(input)
 	p := New(l)
