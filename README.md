@@ -33,4 +33,4 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |False keyword |✅| | |
 |If keyword |✅| | |
 |Else keyword |✅| | |
-|Return keyword |✅| | |
+|Return keyword |✅|✅| |
