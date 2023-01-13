@@ -16,6 +16,9 @@ let foobar = 838383;
 	p := New(l)
 
 	program := p.ParseProgram()
+
+	testNoErrors(t, p)
+
 	if program == nil {
 		t.Fatal("ParseProgram() returned nil")
 	}
@@ -38,8 +41,6 @@ let foobar = 838383;
 			return
 		}
 	}
-
-	testNoErrors(t, p)
 }
 
 func testLetStatement(t *testing.T, stmt ast.Statement, name string) bool {
