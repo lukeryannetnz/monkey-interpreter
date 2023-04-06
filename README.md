@@ -8,29 +8,29 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 
 |Feature|Lexer Support Implemented|Parser Support Implemented|Evaluator Support Implemented|
 |-------|-------------------------|--------------------------|-----------------------------|
-|Identifiers (ascii) |✅| | |
+|Identifiers (ascii) |✅| ✅| |
 |Identifiers (unicode) | | | |
-|Integer literals |✅| | |
+|Integer literals |✅|✅| |
 |Assignment operator |✅| | |
-|Addition operator |✅| | |
-|Subtraction operator |✅| | |
-|Multiplication operator |✅| | |
-|Division operator |✅| | |
-|Bang operator |✅| | |
-|Less than operator |✅| | |
-|Greater than operator |✅| | |
-|Equals operator |✅| | |
-|Not equals operator |✅| | |
+|Addition operator |✅|✅| |
+|Subtraction operator |✅|✅| |
+|Multiplication operator |✅|✅| |
+|Division operator |✅|✅| |
+|Bang operator |✅|✅| |
+|Less than operator |✅|✅| |
+|Greater than operator |✅|✅| |
+|Equals operator |✅|✅| |
+|Not equals operator |✅|✅| |
 |Comma delimiter |✅| | |
-|Semicolon delimiter |✅| | |
-|Left parenthesis delimiter |✅| | |
-|Right parenthesis delimiter |✅| | |
+|Semicolon delimiter |✅|✅| |
+|Left parenthesis delimiter |✅|✅| |
+|Right parenthesis delimiter |✅|✅| |
 |Left brace delimiter |✅| | |
 |Right brace delimiter |✅| | |
 |Function keyword |✅| | |
-|Let keyword |✅|✅| |
+|Let keyword |✅|✅|✅|
 |True keyword |✅| | |
 |False keyword |✅| | |
 |If keyword |✅| | |
 |Else keyword |✅| | |
-|Return keyword |✅|✅| |
+|Return keyword |✅|✅|✅|
