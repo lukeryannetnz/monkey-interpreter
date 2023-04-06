@@ -2,6 +2,7 @@
 package ast
 
 import (
+	"bytes"
 	"monkey-interpreter/token"
 	"strconv"
 )
@@ -126,4 +127,23 @@ func (i *IntegerLiteral) expressionNode()      {}
 func (i *IntegerLiteral) TokenLiteral() string { return i.Token.Literal }
 func (i *IntegerLiteral) String() string {
 	return strconv.FormatInt(i.Value, 10)
+}
+
+type PrefixExpression struct {
+	Token    token.Token // The prefix token e.g. !
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
 }

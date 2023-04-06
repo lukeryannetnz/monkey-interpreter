@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"monkey-interpreter/ast"
 	"monkey-interpreter/lexer"
 	"testing"
@@ -163,16 +164,66 @@ func TestIntegerLiteralExpression(t *testing.T) {
 		t.Fatalf("statement is not an expression statement. got=%T", program.Statements[0])
 	}
 
-	ident, ok := stmt.Value.(*ast.IntegerLiteral)
+	if !testIntegerLiteral(t, stmt.Value, 13) {
+		return
+	}
+}
+
+func testIntegerLiteral(t *testing.T, stmt ast.Expression, input int64) bool {
+	ident, ok := stmt.(*ast.IntegerLiteral)
 	if !ok {
-		t.Fatalf("expression not *ast.IntegerLiteral. got=%T", stmt.Value)
+		t.Fatalf("expression not *ast.IntegerLiteral. got=%T", stmt)
+		return false
 	}
 
-	if ident.Value != 13 {
-		t.Errorf("value not %d, got=%d", 13, ident.Value)
+	if ident.Value != input {
+		t.Errorf("value not %d, got=%d", input, ident.Value)
+		return false
 	}
 
-	if ident.TokenLiteral() != "13" {
-		t.Errorf("tokenLiteral not %s, got=%s", input, ident.TokenLiteral())
+	if ident.TokenLiteral() != fmt.Sprintf("%d", input) {
+		t.Errorf("tokenLiteral not %d, got=%s", input, ident.TokenLiteral())
+		return false
+	}
+
+	return true
+}
+
+func TestPrefixExpressions(t *testing.T) {
+	prefixTests := []struct {
+		input    string
+		operator string
+		value    int64
+	}{
+		{"!5", "!", 5},
+		{"-15", "-", 15},
+	}
+
+	for _, tt := range prefixTests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		testNoErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+		}
+
+		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("statement is not an expression statement. got=%T", program.Statements[0])
+		}
+
+		exp, ok := stmt.Value.(*ast.PrefixExpression)
+		if !ok {
+			t.Fatalf("expression not *ast.PrefixExpression. got=%T", stmt.Value)
+		}
+		if exp.Operator != tt.operator {
+			t.Fatalf("exp.Operator is not %s. got=%s", tt.operator, exp.Operator)
+		}
+
+		if !testIntegerLiteral(t, exp.Right, tt.value) {
+			return
+		}
 	}
 }
