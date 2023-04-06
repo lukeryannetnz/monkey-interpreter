@@ -140,7 +140,7 @@ func (p *Parser) parseExpressionStatement() ast.Statement {
 
 	stmt.Value = p.parseExpression(LOWEST)
 
-	if p.expectPeek(token.SEMICOLON) {
+	if p.peekToken.Type == token.SEMICOLON {
 		p.nextToken()
 	}
 
@@ -155,7 +155,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 	leftExpression := prefix()
 
-	for !p.expectPeek(token.SEMICOLON) && precedence < p.peekPrecedence() {
+	for p.peekToken.Type != token.SEMICOLON && precedence < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
 			return leftExpression
