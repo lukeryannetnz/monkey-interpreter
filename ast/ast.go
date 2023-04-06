@@ -95,16 +95,10 @@ type ExpressionStatement struct {
 func (es *ExpressionStatement) statementNode()       {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
 func (es *ExpressionStatement) String() string {
-	var out string
-	out += es.TokenLiteral() + " "
-
 	if es.Value != nil {
-		out += es.Value.String()
-	} else {
-		out += ";"
+		return es.Value.String()
 	}
-
-	return out
+	return ""
 }
 
 type Identifier struct {
@@ -162,7 +156,7 @@ func (ie *InfixExpression) String() string {
 
 	out.WriteString("(")
 	out.WriteString(ie.Left.String())
-	out.WriteString(ie.Operator)
+	out.WriteString(" " + ie.Operator + " ")
 	out.WriteString(ie.Right.String())
 	out.WriteString(")")
 
