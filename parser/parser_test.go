@@ -173,10 +173,12 @@ func TestPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
 		input    string
 		operator string
-		value    int64
+		value    interface{}
 	}{
 		{"!5", "!", 5},
 		{"-15", "-", 15},
+		{"!false", "!", false},
+		{"!true", "!", true},
 	}
 
 	for _, tt := range prefixTests {
