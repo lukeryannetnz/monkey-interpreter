@@ -66,6 +66,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.TRUE, p.parseBooleanExpression)
+	p.registerPrefix(token.FALSE, p.parseBooleanExpression)
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.refisterInfix(token.PLUS, p.parseInfixExpression)
 	p.refisterInfix(token.MINUS, p.parseInfixExpression)
@@ -259,4 +261,8 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {
 	msg := fmt.Sprintf("no prefix parse function for %s found.", t)
 	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) parseBooleanExpression() ast.Expression {
+	return &ast.Boolean{Token: p.curToken, Value: p.curToken.Type == token.TRUE}
 }
