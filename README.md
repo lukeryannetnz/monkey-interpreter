@@ -31,6 +31,6 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |Let keyword |✅|✅| |
 |True keyword |✅| | |
 |False keyword |✅| | |
-|If keyword |✅| | |
-|Else keyword |✅| | |
+|If keyword |✅|✅| |
+|Else keyword |✅|✅| |
 |Return keyword |✅|✅| |
