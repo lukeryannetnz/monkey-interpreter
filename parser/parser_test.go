@@ -246,23 +246,32 @@ func TestInfixExpressions(t *testing.T) {
 			t.Fatalf("statement is not an expression statement. got=%T", program.Statements[0])
 		}
 
-		exp, ok := stmt.Value.(*ast.InfixExpression)
-		if !ok {
-			t.Fatalf("expression not *ast.InfixExpression. got=%T", stmt.Value)
-		}
-
-		if !testLiteralExpression(t, exp.Left, tt.leftValue) {
-			return
-		}
-
-		if exp.Operator != tt.operator {
-			t.Fatalf("exp.Operator is not '%s'. got=%s", tt.operator, exp.Operator)
-		}
-
-		if !testLiteralExpression(t, exp.Right, tt.rightValue) {
+		if !testInfixExpression(t, stmt.Value, tt.leftValue, tt.operator, tt.rightValue) {
 			return
 		}
 	}
+}
+
+func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
+	operator string, right interface{}) bool {
+
+	opExp, ok := exp.(*ast.InfixExpression)
+	if !ok {
+		t.Fatalf("expression not *ast.InfixExpression. got=%T", exp)
+	}
+
+	if !testLiteralExpression(t, opExp.Left, left) {
+		return false
+	}
+
+	if opExp.Operator != operator {
+		t.Fatalf("opExp.Operator is not '%s'. got=%s", operator, opExp.Operator)
+	}
+
+	if !testLiteralExpression(t, opExp.Right, right) {
+		return false
+	}
+	return true
 }
 
 func TestOperatorPrecendence(t *testing.T) {
@@ -330,6 +339,68 @@ func TestBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestIfExpression(t *testing.T) {
+	input := `if (x < y) { x }`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	testNoErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement, got=%T", len(program.Statements))
+	}
+
+	exp, ok := stmt.Value.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.IfExpression, got =%T", program.Statements[0])
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not 1 statement. got=%T", len(exp.Consequence.Statements))
+	}
+}
+
+func TestIfElseExpression(t *testing.T) {
+	input := `if (x < y) { x } else { y }`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	testNoErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement, got=%T", len(program.Statements))
+	}
+
+	exp, ok := stmt.Value.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.IfExpression, got =%T", program.Statements[0])
+	}
+
+	if !testInfixExpression(t, exp.Condition, "x", "<", "y") {
+		return
+	}
+
+	if len(exp.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not 1 statement. got=%T", len(exp.Consequence.Statements))
+	}
+}
+
 func testLiteralExpression(
 	t *testing.T,
 	exp ast.Expression,
@@ -340,8 +411,8 @@ func testLiteralExpression(
 		return testIntegerLiteral(t, exp, int64(v))
 	case int64:
 		return testIntegerLiteral(t, exp, v)
-	// case string:
-	// 	return testIdentifier(t, exp, v)
+	case string:
+		return testIdentifier(t, exp, v)
 	case bool:
 		return testBooleanLiteral(t, exp, v)
 	}
@@ -364,6 +435,27 @@ func testIntegerLiteral(t *testing.T, stmt ast.Expression, input interface{}) bo
 
 	if ident.TokenLiteral() != fmt.Sprintf("%d", input) {
 		t.Errorf("tokenLiteral not %d, got=%s", input, ident.TokenLiteral())
+		return false
+	}
+
+	return true
+}
+
+func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
+	ident, ok := exp.(*ast.Identifier)
+	if !ok {
+		t.Errorf("exp not *ast.Identifier. got=%T", exp)
+		return false
+	}
+
+	if ident.Value != value {
+		t.Errorf("ident.Value not %s. got=%s", value, ident.Value)
+		return false
+	}
+
+	if ident.TokenLiteral() != value {
+		t.Errorf("ident.TokenLiteral not %s. got=%s", value,
+			ident.TokenLiteral())
 		return false
 	}
 
