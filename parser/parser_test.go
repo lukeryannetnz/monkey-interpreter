@@ -401,6 +401,80 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
+func TestFunctionLiteralParsing(t *testing.T) {
+	input := `fn(x, y) { x + y;}`
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statments does not contain 1 statement. Got: %d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not an ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	function, ok := stmt.Value.(*ast.FunctionLiteral)
+	if !ok {
+		t.Fatalf("stmt.Value is not ast.FunctionLiteral. Got=%T", stmt.Value)
+	}
+
+	if len(function.Parameters) != 2 {
+		t.Fatalf("function.Parameters is not 2. Got=%d", len(function.Parameters))
+	}
+
+	testLiteralExpression(t, function.Parameters[0], "x")
+	testLiteralExpression(t, function.Parameters[1], "y")
+
+	if len(function.Body.Statements) != 1 {
+		t.Fatalf("function.Body.Statements does not contain 1 statement. Got=%d", len(function.Body.Statements))
+	}
+
+	bodyStmt, ok := function.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("function.Body.Statements[0] is not ExpressionStatement. Got=%T", function.Body.Statements[0])
+	}
+
+	testInfixExpression(t, bodyStmt.Value, "x", "+", "y")
+}
+
+func TestFunctionParameterParsing(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedParams []string
+	}{
+		{input: "fn() {};", expectedParams: []string{}},
+		{input: "fn(x){};", expectedParams: []string{"x"}},
+		{input: "fn(x, y, z){};", expectedParams: []string{"x", "y", "z"}},
+	}
+
+	for _, test := range tests {
+		l := lexer.New(test.input)
+		p := New(l)
+		program := p.ParseProgram()
+		testNoErrors(t, p)
+
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+		if stmt == nil || stmt.Value == nil {
+			t.Error("no statement with value returned")
+		}
+
+		fl := stmt.Value.(*ast.FunctionLiteral)
+
+		if len(fl.Parameters) != len(test.expectedParams) {
+			t.Errorf("incorrect number of parameters returned. got:%d expected:%d", len(fl.Parameters), len(test.expectedParams))
+		}
+
+		for i, param := range fl.Parameters {
+			if param.Value != test.expectedParams[i] {
+				t.Errorf("param value incorrect. got:%s expected:%s", param.Value, test.expectedParams[i])
+			}
+		}
+	}
+}
+
 func testLiteralExpression(
 	t *testing.T,
 	exp ast.Expression,

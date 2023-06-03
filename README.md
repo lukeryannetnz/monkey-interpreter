@@ -27,7 +27,7 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |Right parenthesis delimiter |✅|✅| |
 |Left brace delimiter |✅| | |
 |Right brace delimiter |✅| | |
-|Function keyword |✅| | |
+|Function literals |✅|✅| |
 |Let keyword |✅|✅| |
 |True keyword |✅| | |
 |False keyword |✅| | |

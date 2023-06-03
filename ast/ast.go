@@ -93,6 +93,7 @@ type ExpressionStatement struct {
 }
 
 func (es *ExpressionStatement) statementNode()       {}
+func (es *ExpressionStatement) expressionNode()      {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
 func (es *ExpressionStatement) String() string {
 	if es.Value != nil {
@@ -209,6 +210,28 @@ func (bs *BlockStatement) String() string {
 	for _, s := range bs.Statements {
 		out.WriteString((s.String()))
 	}
+
+	return out.String()
+}
+
+type FunctionLiteral struct {
+	Token      token.Token // the 'fn' token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (fl *FunctionLiteral) expressionNode()      {}
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
+func (fl *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	for _, p := range fl.Parameters {
+		out.WriteString((p.Value))
+		out.WriteString(", ")
+	}
+	out.WriteString(")")
+	out.WriteString(fl.Body.String())
 
 	return out.String()
 }
