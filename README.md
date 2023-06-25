@@ -8,10 +8,10 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 
 |Feature|Lexer Support Implemented|Parser Support Implemented|Evaluator Support Implemented|
 |-------|-------------------------|--------------------------|-----------------------------|
-|Identifiers (ascii) |✅| ✅| |
+|Identifiers (ascii) |✅|✅| |
 |Identifiers (unicode) | | | |
 |Integer literals |✅|✅| |
-|Assignment operator |✅| | |
+|Assignment operator |✅|✅| |
 |Addition operator |✅|✅| |
 |Subtraction operator |✅|✅| |
 |Multiplication operator |✅|✅| |
@@ -21,16 +21,16 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |Greater than operator |✅|✅| |
 |Equals operator |✅|✅| |
 |Not equals operator |✅|✅| |
-|Comma delimiter |✅| | |
+|Comma delimiter |✅|✅| |
 |Semicolon delimiter |✅|✅| |
 |Left parenthesis delimiter |✅|✅| |
 |Right parenthesis delimiter |✅|✅| |
-|Left brace delimiter |✅| | |
-|Right brace delimiter |✅| | |
+|Left brace delimiter |✅|✅| |
+|Right brace delimiter |✅|✅| |
 |Function literals |✅|✅| |
 |Let keyword |✅|✅| |
-|True keyword |✅| | |
-|False keyword |✅| | |
+|True keyword |✅|✅| |
+|False keyword |✅|✅| |
 |If keyword |✅|✅| |
 |Else keyword |✅|✅| |
 |Return keyword |✅|✅| |
