@@ -30,15 +30,21 @@ let foobar = 838383;
 
 	tests := []struct {
 		expectedIdentifier string
+		expectedValue      int
 	}{
-		{"x"},
-		{"y"},
-		{"foobar"},
+		{"x", 5},
+		{"y", 10},
+		{"foobar", 838383},
 	}
 
 	for i, tt := range tests {
 		stmt := program.Statements[i]
 		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
+
+		val := stmt.(*ast.LetStatement).Value
+		if !testLiteralExpression(t, val, tt.expectedValue) {
 			return
 		}
 	}
@@ -74,7 +80,7 @@ func TestReturnStatement(t *testing.T) {
 	input := `
 return 5;
 return 10;
-return add(15);
+return foobar;
 `
 	l := lexer.New(input)
 	p := New(l)
@@ -82,6 +88,15 @@ return add(15);
 	program := p.ParseProgram()
 
 	testNoErrors(t, p)
+
+	tests := []struct {
+		expectedToken string
+		expectedValue interface{}
+	}{
+		{"return", 5},
+		{"return", 10},
+		{"return", "foobar"},
+	}
 
 	if program == nil {
 		t.Fatal("ParseProgram() returned nil")
@@ -91,17 +106,19 @@ return add(15);
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
 	}
 
-	for _, stmt := range program.Statements {
-		returnStmt, ok := stmt.(*ast.ReturnStatement)
+	for i, tst := range tests {
+		returnStmt, ok := program.Statements[i].(*ast.ReturnStatement)
 
 		if !ok {
-			t.Errorf("stmt not *ast.ReturnStatement. got=%T", stmt)
+			t.Errorf("stmt not *ast.ReturnStatement. got=%T", returnStmt.Token)
 			continue
 		}
 
-		if returnStmt.TokenLiteral() != "return" {
+		if returnStmt.TokenLiteral() != tst.expectedToken {
 			t.Errorf("returnStmt.TokenLiteral not 'return'. got=%q", returnStmt.TokenLiteral())
 		}
+
+		testLiteralExpression(t, returnStmt.Value, tst.expectedValue)
 	}
 }
 

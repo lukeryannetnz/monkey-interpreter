@@ -192,10 +192,10 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.curToken}
-
 	p.nextToken()
 
-	for !(p.curToken.Type == token.SEMICOLON) {
+	stmt.Value = p.parseExpression(LOWEST)
+	if p.peekToken.Literal == token.SEMICOLON {
 		p.nextToken()
 	}
 
@@ -217,7 +217,10 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: We're skipping the expressions until we encounter a semicolon
+	p.nextToken()
+
+	stmt.Value = p.parseExpression(LOWEST)
+
 	for !(p.curToken.Type == token.SEMICOLON) {
 		p.nextToken()
 	}
