@@ -74,3 +74,13 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 
 	return true
 }
+
+func TestNullExpression(t *testing.T) {
+	obj := testEval("")
+
+	result, ok := obj.(*object.Null)
+
+	if !ok {
+		t.Errorf("wrong type, expected object.Null. got %T", result.Type())
+	}
+}
