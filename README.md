@@ -29,8 +29,8 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |Right brace delimiter |✅|✅| |
 |Function literals |✅|✅| |
 |Let keyword |✅|✅| |
-|True keyword |✅|✅| |
-|False keyword |✅|✅| |
+|True keyword |✅|✅|✅|
+|False keyword |✅|✅|✅|
 |If keyword |✅|✅| |
 |Else keyword |✅|✅| |
 |Return keyword |✅|✅| |
