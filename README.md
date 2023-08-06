@@ -10,7 +10,7 @@ Following Thorsten Ball's book [Writing an Interpreter in Go](https://interprete
 |-------|-------------------------|--------------------------|-----------------------------|
 |Identifiers (ascii) |✅|✅| |
 |Identifiers (unicode) | | | |
-|Integer literals |✅|✅| |
+|Integer literals |✅|✅|✅|
 |Assignment operator |✅|✅| |
 |Addition operator |✅|✅| |
 |Subtraction operator |✅|✅| |
