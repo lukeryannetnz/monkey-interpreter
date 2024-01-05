@@ -12,6 +12,7 @@ const (
 	INTEGER_OBJ      = "INTEGER"
 	BOOLEAN_OBJ      = "BOOLEAN"
 	NULL_OBJ         = "NULL"
+	ERROR_OBJ        = "ERROR"
 )
 
 type Object interface {
@@ -44,3 +45,10 @@ type Null struct{}
 
 func (n *Null) Inspect() string  { return "null" }
 func (n *Null) Type() ObjectType { return NULL_OBJ }
+
+type Error struct {
+	Message string
+}
+
+func (e *Error) Inspect() string  { return e.Message }
+func (e *Error) Type() ObjectType { return ERROR_OBJ }
