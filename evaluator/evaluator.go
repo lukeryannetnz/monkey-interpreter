@@ -33,10 +33,19 @@ func Eval(node ast.Node) object.Object {
 		return nativeBoolToBooleanObject(node.Value)
 	case *ast.PrefixExpression:
 		right := Eval(node.Right)
+		if isError(right) {
+			return right
+		}
 		return evalPrefixExpression(node.Operator, right)
 	case *ast.InfixExpression:
 		left := Eval(node.Left)
+		if isError(left) {
+			return left
+		}
 		right := Eval(node.Right)
+		if isError(right) {
+			return right
+		}
 		return evalInfixExperession(node.Operator, left, right)
 	case *ast.IfExpression:
 		condition := Eval(node.Condition)
@@ -59,6 +68,14 @@ func Eval(node ast.Node) object.Object {
 	}
 
 	return nil
+}
+
+func isError(obj object.Object) bool {
+	if obj == nil {
+		return false
+	}
+
+	return obj.Type() == object.ERROR_OBJ
 }
 
 func evalInfixExperession(operator string, left, right object.Object) object.Object {
