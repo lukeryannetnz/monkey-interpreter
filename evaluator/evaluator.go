@@ -9,25 +9,24 @@ import (
 )
 
 var (
-	TRUE        = &object.Boolean{Value: true}
-	FALSE       = &object.Boolean{Value: false}
-	NULL        = &object.Null{}
-	environment = make(map[string]object.Object)
+	TRUE  = &object.Boolean{Value: true}
+	FALSE = &object.Boolean{Value: false}
+	NULL  = &object.Null{}
 )
 
-func Eval(node ast.Node) object.Object {
+func Eval(node ast.Node, environment *object.Environment) object.Object {
 	switch node := node.(type) {
 	// statements
 	case *ast.Program:
-		return evalProgram(node.Statements)
+		return evalProgram(node.Statements, environment)
 	case *ast.ExpressionStatement:
-		return Eval(node.Value)
+		return Eval(node.Value, environment)
 	case *ast.BlockStatement:
-		return evalBlockStatement(node.Statements)
+		return evalBlockStatement(node.Statements, environment)
 	case *ast.ReturnStatement:
-		return &object.ReturnValue{Value: Eval(node.Value)}
+		return &object.ReturnValue{Value: Eval(node.Value, environment)}
 	case *ast.LetStatement:
-		return evalLetStatement(node)
+		return evalLetStatement(node, environment)
 
 	// expressions
 	case *ast.IntegerLiteral:
@@ -35,23 +34,23 @@ func Eval(node ast.Node) object.Object {
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
 	case *ast.PrefixExpression:
-		right := Eval(node.Right)
+		right := Eval(node.Right, environment)
 		if isError(right) {
 			return right
 		}
 		return evalPrefixExpression(node.Operator, right)
 	case *ast.InfixExpression:
-		left := Eval(node.Left)
+		left := Eval(node.Left, environment)
 		if isError(left) {
 			return left
 		}
-		right := Eval(node.Right)
+		right := Eval(node.Right, environment)
 		if isError(right) {
 			return right
 		}
 		return evalInfixExperession(node.Operator, left, right)
 	case *ast.IfExpression:
-		condition := Eval(node.Condition)
+		condition := Eval(node.Condition, environment)
 
 		if condition == nil {
 			return NULL
@@ -61,15 +60,15 @@ func Eval(node ast.Node) object.Object {
 
 		// conditions which contain a value (not nil) which is not a bool are truthy
 		if !ok || boolCondition.Value {
-			return Eval(node.Consequence)
+			return Eval(node.Consequence, environment)
 		} else {
 			if node.Alternative == nil {
 				return NULL
 			}
-			return Eval(node.Alternative)
+			return Eval(node.Alternative, environment)
 		}
 	case *ast.Identifier:
-		return evalIdentifier(node)
+		return evalIdentifier(node, environment)
 	}
 
 	return nil
@@ -181,11 +180,11 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	return FALSE
 }
 
-func evalProgram(stmts []ast.Statement) object.Object {
+func evalProgram(stmts []ast.Statement, environment *object.Environment) object.Object {
 	var result object.Object
 	result = NULL
 	for _, statement := range stmts {
-		result = Eval(statement)
+		result = Eval(statement, environment)
 
 		// if we encounter a return statement or error, break execution
 		switch result := result.(type) {
@@ -199,11 +198,11 @@ func evalProgram(stmts []ast.Statement) object.Object {
 	return result
 }
 
-func evalBlockStatement(stmts []ast.Statement) object.Object {
+func evalBlockStatement(stmts []ast.Statement, environment *object.Environment) object.Object {
 	var result object.Object
 	result = NULL
 	for _, statement := range stmts {
-		result = Eval(statement)
+		result = Eval(statement, environment)
 
 		if result != nil && (result.Type() == object.RETURN_VALUE_OBJ || result.Type() == object.ERROR_OBJ) {
 			return result
@@ -213,22 +212,22 @@ func evalBlockStatement(stmts []ast.Statement) object.Object {
 	return result
 }
 
-func evalLetStatement(statement *ast.LetStatement) object.Object {
-	result := Eval(statement.Value)
+func evalLetStatement(statement *ast.LetStatement, environment *object.Environment) object.Object {
+	result := Eval(statement.Value, environment)
 
 	if isError(result) {
 		return result
 	}
 
-	environment[statement.Name.Value] = result
+	environment.Set(statement.Name.Value, result)
 	return result
 }
 
-func evalIdentifier(node *ast.Identifier) object.Object {
+func evalIdentifier(node *ast.Identifier, environment *object.Environment) object.Object {
 
-	value := environment[node.Value]
+	value, ok := environment.Get(node.Value)
 
-	if value == nil {
+	if !ok {
 		return newError("unknown identifier: %s", node.Value)
 	}
 
