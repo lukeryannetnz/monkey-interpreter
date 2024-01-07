@@ -9,9 +9,10 @@ import (
 )
 
 var (
-	TRUE  = &object.Boolean{Value: true}
-	FALSE = &object.Boolean{Value: false}
-	NULL  = &object.Null{}
+	TRUE        = &object.Boolean{Value: true}
+	FALSE       = &object.Boolean{Value: false}
+	NULL        = &object.Null{}
+	environment = make(map[string]object.Object)
 )
 
 func Eval(node ast.Node) object.Object {
@@ -25,6 +26,8 @@ func Eval(node ast.Node) object.Object {
 		return evalBlockStatement(node.Statements)
 	case *ast.ReturnStatement:
 		return &object.ReturnValue{Value: Eval(node.Value)}
+	case *ast.LetStatement:
+		return evalLetStatement(node)
 
 	// expressions
 	case *ast.IntegerLiteral:
@@ -65,6 +68,8 @@ func Eval(node ast.Node) object.Object {
 			}
 			return Eval(node.Alternative)
 		}
+	case *ast.Identifier:
+		return evalIdentifier(node)
 	}
 
 	return nil
@@ -206,4 +211,26 @@ func evalBlockStatement(stmts []ast.Statement) object.Object {
 	}
 
 	return result
+}
+
+func evalLetStatement(statement *ast.LetStatement) object.Object {
+	result := Eval(statement.Value)
+
+	if isError(result) {
+		return result
+	}
+
+	environment[statement.Name.Value] = result
+	return result
+}
+
+func evalIdentifier(node *ast.Identifier) object.Object {
+
+	value := environment[node.Value]
+
+	if value == nil {
+		return newError("unknown identifier: %s", node.Value)
+	}
+
+	return value
 }
