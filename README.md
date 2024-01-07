@@ -29,12 +29,12 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |Bang operator |✅|✅|✅|
 |Less than operator |✅|✅|✅|
 |Greater than operator |✅|✅|✅|
-|Equals operator |✅|✅| |
-|Not equals operator |✅|✅| |
-|Comma delimiter |✅|✅| |
+|Equals operator |✅|✅|✅|
+|Not equals operator |✅|✅|✅|
+|Comma delimiter |✅|✅|✅|
 |Semicolon delimiter |✅|✅|✅|
-|Left parenthesis delimiter |✅|✅| |
-|Right parenthesis delimiter |✅|✅| |
+|Left parenthesis delimiter |✅|✅|✅|
+|Right parenthesis delimiter |✅|✅|✅|
 |Left brace delimiter |✅|✅|✅|
 |Right brace delimiter |✅|✅|✅|
 |Function literals |✅|✅| |
