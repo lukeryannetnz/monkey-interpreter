@@ -18,7 +18,7 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 
 |Feature|Lexer Support Implemented|Parser Support Implemented|Evaluator Support Implemented|
 |-------|-------------------------|--------------------------|-----------------------------|
-|Identifiers (ascii) |✅|✅| |
+|Identifiers (ascii) |✅|✅|✅|
 |Identifiers (unicode) | | | |
 |Integer literals |✅|✅|✅|
 |Assignment operator |✅|✅| |
@@ -38,7 +38,7 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |Left brace delimiter |✅|✅| |
 |Right brace delimiter |✅|✅| |
 |Function literals |✅|✅| |
-|Let keyword |✅|✅| |
+|Let keyword |✅|✅|✅|
 |True keyword |✅|✅|✅|
 |False keyword |✅|✅|✅|
 |If keyword |✅|✅|✅|
