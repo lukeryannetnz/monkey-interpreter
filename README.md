@@ -21,7 +21,7 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |Identifiers (ascii) |✅|✅|✅|
 |Identifiers (unicode) | | | |
 |Integer literals |✅|✅|✅|
-|Assignment operator |✅|✅| |
+|Assignment operator |✅|✅|✅|
 |Addition operator |✅|✅|✅|
 |Subtraction operator |✅|✅|✅|
 |Multiplication operator |✅|✅|✅|
@@ -35,8 +35,8 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |Semicolon delimiter |✅|✅|✅|
 |Left parenthesis delimiter |✅|✅| |
 |Right parenthesis delimiter |✅|✅| |
-|Left brace delimiter |✅|✅| |
-|Right brace delimiter |✅|✅| |
+|Left brace delimiter |✅|✅|✅|
+|Right brace delimiter |✅|✅|✅|
 |Function literals |✅|✅| |
 |Let keyword |✅|✅|✅|
 |True keyword |✅|✅|✅|
