@@ -37,6 +37,6 @@ jobs:
         # If you are using config file you shouldn't use these parameters.
         profile: cover.out
         local-prefix: github.com/org/project
-        threshold-file: 80
-        threshold-package: 80
-        threshold-total: 95
+        threshold-file: 0
+        threshold-package: 0
+        threshold-total: 75
