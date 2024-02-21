@@ -24,7 +24,13 @@ const (
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
 
-	return &Environment{store: s}
+	return &Environment{store: s, enclosingEnvironment: nil}
+}
+
+func ExtendEnvironment(enclosingEnv *Environment) *Environment {
+	s := make(map[string]Object)
+
+	return &Environment{store: s, enclosingEnvironment: enclosingEnv}
 }
 
 type Object interface {
@@ -33,11 +39,16 @@ type Object interface {
 }
 
 type Environment struct {
-	store map[string]Object
+	store                map[string]Object
+	enclosingEnvironment *Environment
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
 	obj, ok := e.store[name]
+
+	if !ok && e.enclosingEnvironment != nil {
+		obj, ok = e.enclosingEnvironment.Get(name)
+	}
 	return obj, ok
 }
 
