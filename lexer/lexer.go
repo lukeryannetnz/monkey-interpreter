@@ -70,6 +70,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.COMMA, l.ch)
 	case ';':
 		tok = token.New(token.SEMICOLON, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	default:
 		literal := l.readLiteral()
 		tok = token.FindTokenType(literal)
@@ -82,6 +85,11 @@ func (l *Lexer) NextToken() token.Token {
 func isWhitespace(ch byte) bool {
 	// ascii values for tab, line feed, carriage return and space
 	return ch == 9 || ch == 10 || ch == 13 || ch == 32
+}
+
+func isQuote(ch byte) bool {
+	// ascii values for "
+	return ch == 34
 }
 
 func (l *Lexer) eatWhitespace() {
@@ -99,6 +107,24 @@ func (l *Lexer) readLiteral() string {
 
 		peek := l.peekChar()
 		if isWhitespace(peek) || token.IsDelimiter(peek) {
+			return literal
+		}
+
+		l.readChar()
+	}
+
+	return literal
+}
+
+func (l *Lexer) readString() string {
+	literal := ""
+	l.readChar()
+
+	for l.ch != 0 {
+		literal += string(l.ch)
+
+		peek := l.peekChar()
+		if isQuote(peek) {
 			return literal
 		}
 
