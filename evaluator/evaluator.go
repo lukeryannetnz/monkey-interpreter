@@ -68,9 +68,11 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 			return Eval(node.Alternative, environment)
 		}
 	case *ast.Identifier:
-		return evalIdentifier(node, environment)
+		return evalIdentifier(node.Value, environment)
 	case *ast.FunctionLiteral:
 		return &object.Function{Parameters: node.Parameters, Body: node.Body, Env: environment}
+	case *ast.CallExpression:
+		return evalCallStatement(node, environment)
 	}
 
 	return nil
@@ -225,13 +227,67 @@ func evalLetStatement(statement *ast.LetStatement, environment *object.Environme
 	return result
 }
 
-func evalIdentifier(node *ast.Identifier, environment *object.Environment) object.Object {
+func evalIdentifier(identifier string, environment *object.Environment) object.Object {
 
-	value, ok := environment.Get(node.Value)
+	value, ok := environment.Get(identifier)
 
 	if !ok {
-		return newError("unknown identifier: %s", node.Value)
+		return newError("unknown identifier: %s", identifier)
 	}
 
 	return value
+}
+
+func evalCallStatement(statement *ast.CallExpression, env *object.Environment) object.Object {
+	function := Eval(statement.Function, env)
+
+	if isError(function) {
+		return function
+	}
+
+	args := evalExpressions(statement.Arguments, env)
+	if len(args) == 1 && isError(args[0]) {
+		return args[0]
+	}
+
+	functionToCall, ok := function.(*object.Function)
+	if !ok {
+		return newError("not a function: %s", function.Type())
+	}
+
+	extendedEnv := extendFunctionEnv(functionToCall, args)
+	res := Eval(functionToCall.Body, extendedEnv)
+
+	if returnValue, ok := res.(*object.ReturnValue); ok {
+		return returnValue.Value
+	}
+
+	return res
+}
+
+func evalExpressions(expressions []ast.Expression, env *object.Environment) []object.Object {
+	var result []object.Object
+
+	for _, e := range expressions {
+		evaluated := Eval(e, env)
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+		result = append(result, evaluated)
+	}
+
+	return result
+}
+
+func extendFunctionEnv(
+	fn *object.Function,
+	args []object.Object,
+) *object.Environment {
+	env := object.ExtendEnvironment(fn.Env)
+
+	for paramIdx, param := range fn.Parameters {
+		env.Set(param.Value, args[paramIdx])
+	}
+
+	return env
 }
