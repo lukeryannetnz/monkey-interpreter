@@ -19,6 +19,7 @@ const (
 	NULL_OBJ         = "NULL"
 	ERROR_OBJ        = "ERROR"
 	FUNCTION_OBJ     = "FUNCTION"
+	STRING_OBJ       = "STRING"
 )
 
 func NewEnvironment() *Environment {
@@ -114,3 +115,10 @@ func (f *Function) Inspect() string {
 
 	return out.String()
 }
+
+type String struct {
+	Value string
+}
+
+func (s *String) Type() ObjectType { return FUNCTION_OBJ }
+func (s *String) Inspect() string  { return s.Value }
