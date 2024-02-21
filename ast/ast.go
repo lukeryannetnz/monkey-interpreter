@@ -125,6 +125,17 @@ func (i *IntegerLiteral) String() string {
 	return strconv.FormatInt(i.Value, 10)
 }
 
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (i *StringLiteral) expressionNode()      {}
+func (i *StringLiteral) TokenLiteral() string { return i.Token.Literal }
+func (i *StringLiteral) String() string {
+	return i.Value
+}
+
 type PrefixExpression struct {
 	Token    token.Token // The prefix token e.g. !
 	Operator string
