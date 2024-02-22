@@ -20,6 +20,7 @@ const (
 	ERROR_OBJ        = "ERROR"
 	FUNCTION_OBJ     = "FUNCTION"
 	STRING_OBJ       = "STRING"
+	BUILTIN_OBJ      = "BUILTIN"
 )
 
 func NewEnvironment() *Environment {
@@ -43,6 +44,8 @@ type Environment struct {
 	store                map[string]Object
 	enclosingEnvironment *Environment
 }
+
+type BuiltinFunction func(args ...Object) Object
 
 func (e *Environment) Get(name string) (Object, bool) {
 	obj, ok := e.store[name]
@@ -122,3 +125,10 @@ type String struct {
 
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return s.Value }
+
+type BuiltIn struct {
+	Fn BuiltinFunction
+}
+
+func (b *BuiltIn) Type() ObjectType { return BUILTIN_OBJ }
+func (b *BuiltIn) Inspect() string  { return "builtin function" }

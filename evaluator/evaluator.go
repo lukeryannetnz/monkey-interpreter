@@ -250,11 +250,17 @@ func evalIdentifier(identifier string, environment *object.Environment) object.O
 
 	value, ok := environment.Get(identifier)
 
-	if !ok {
-		return newError("unknown identifier: %s", identifier)
+	if ok {
+		return value
 	}
 
-	return value
+	builtin, ok := builtins[identifier]
+
+	if ok {
+		return builtin
+	}
+
+	return newError("unknown identifier: %s", identifier)
 }
 
 func evalCallStatement(statement *ast.CallExpression, env *object.Environment) object.Object {
@@ -269,19 +275,21 @@ func evalCallStatement(statement *ast.CallExpression, env *object.Environment) o
 		return args[0]
 	}
 
-	functionToCall, ok := function.(*object.Function)
-	if !ok {
+	switch fn := function.(type) {
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(fn, args)
+		res := Eval(fn.Body, extendedEnv)
+
+		if returnValue, ok := res.(*object.ReturnValue); ok {
+			return returnValue.Value
+		}
+		return res
+	case *object.BuiltIn:
+		return fn.Fn(args...)
+	default:
 		return newError("not a function: %s", function.Type())
+
 	}
-
-	extendedEnv := extendFunctionEnv(functionToCall, args)
-	res := Eval(functionToCall.Body, extendedEnv)
-
-	if returnValue, ok := res.(*object.ReturnValue); ok {
-		return returnValue.Value
-	}
-
-	return res
 }
 
 func evalExpressions(expressions []ast.Expression, env *object.Environment) []object.Object {

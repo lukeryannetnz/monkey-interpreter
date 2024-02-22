@@ -547,6 +547,39 @@ func TestCallExpression(t *testing.T) {
 	testInfixExpression(t, ce.Arguments[2], 4, "+", 5)
 }
 
+func TestCallExpressionStringParam(t *testing.T) {
+	input := `add("four")`
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	if len(program.Statements) != 1 {
+		t.Errorf("expected 1 statement, got:%d", len(program.Statements))
+	}
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	if stmt == nil || stmt.Value == nil {
+		t.Error("no statement with value returned")
+	}
+
+	ce, ok := stmt.Value.(*ast.CallExpression)
+	if !ok || ce == nil {
+		t.Error("no call expression returned")
+	}
+
+	if ce.Function.String() != "add" {
+		return
+	}
+
+	if len(ce.Arguments) != 1 {
+		t.Fatalf("wrong length of arguments. got=%d", len(ce.Arguments))
+	}
+
+	if ce.Arguments[0].String() != "four" {
+		t.Fatalf("argument wrong, expected \"four\" got:%s", ce.Arguments[0])
+	}
+}
+
 func TestFunctionLiteralCallExpression(t *testing.T) {
 	input := "fn(x) { x; }(5)"
 	l := lexer.New(input)

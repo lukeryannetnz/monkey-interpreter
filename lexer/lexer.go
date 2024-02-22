@@ -117,22 +117,14 @@ func (l *Lexer) readLiteral() string {
 }
 
 func (l *Lexer) readString() string {
-	literal := ""
-	l.readChar()
-
-	for l.ch != 0 {
-		literal += string(l.ch)
-
-		peek := l.peekChar()
-		if isQuote(peek) {
-			l.readChar()
-			return literal
-		}
-
+	position := l.position + 1
+	for {
 		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
 	}
-
-	return literal
+	return l.input[position:l.position]
 }
 
 func (l *Lexer) readChar() {

@@ -154,7 +154,7 @@ func TestStringToken(t *testing.T) {
 }
 
 func TestStringSubstitutionToken(t *testing.T) {
-	input := `"Hello" - "World"`
+	input := `"Hello" - "World" ""`
 
 	tests := []struct {
 		expectedType token.TokenType
@@ -164,6 +164,7 @@ func TestStringSubstitutionToken(t *testing.T) {
 		{token.STRING, "Hello"},
 		{token.MINUS, "-"},
 		{token.STRING, "World"},
+		{token.STRING, ""},
 	}
 
 	l := New(input)
