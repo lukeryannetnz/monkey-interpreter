@@ -65,3 +65,47 @@ func TestIfExpressionString(t *testing.T) {
 		t.Errorf("program.String() wrong, got=%q", program.String())
 	}
 }
+
+func TestTokenLiteral(t *testing.T) {
+	program := &Program{
+		Statements: []Statement{
+			&LetStatement{
+				Token: token.Token{Type: token.LET, Literal: "let"},
+				Name: &Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "foo"},
+					Value: "foo",
+				},
+				Value: &Identifier{
+					Token: token.Token{Type: token.IDENT, Literal: "bar"},
+					Value: "bar",
+				},
+			},
+		},
+	}
+
+	tl := program.TokenLiteral()
+
+	if tl != "let" {
+		t.Fatalf("token literal not correct. expected=let, got=%s", tl)
+	}
+}
+
+func TestCallExpressionString(t *testing.T) {
+	ce := &CallExpression{
+		Token: token.Token{Type: token.LPAREN, Literal: "("},
+		Function: &Identifier{
+			Token: token.Token{Type: token.IDENT, Literal: "foo"},
+			Value: "foo",
+		},
+		Arguments: []Expression{
+			&StringLiteral{
+				Token: token.Token{Type: token.IDENT, Literal: "bar"},
+				Value: "bar",
+			},
+		},
+	}
+
+	if ce.String() != "foo(bar)" {
+		t.Fatalf("string not correct. expected=foo(bar), got=%s", ce.String())
+	}
+}
