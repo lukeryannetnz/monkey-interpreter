@@ -46,4 +46,4 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |If keyword |✅|✅|✅|
 |Else keyword |✅|✅|✅|
 |Return keyword |✅|✅|✅|
-|String literals |✅|||
+|String literals |✅|✅|✅|
