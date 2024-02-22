@@ -305,6 +305,14 @@ func TestFunctionObject(t *testing.T) {
 	if fn.Body.String() != expectedBody {
 		t.Fatalf("body is not %q. got = %q", expectedBody, fn.Body.String())
 	}
+
+	expectedString := `fn(x) {
+(x + 2)
+}`
+
+	if fn.Inspect() != expectedString {
+		t.Fatalf("Inspect() is not %q. got = %q", expectedString, fn.Inspect())
+	}
 }
 
 func TestFunctionApplication(t *testing.T) {
