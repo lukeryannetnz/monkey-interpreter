@@ -97,8 +97,21 @@ func evalInfixExperession(operator string, left, right object.Object) object.Obj
 		return evalBooleanInfixExpression(operator, left, right)
 	}
 
+	if left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ {
+		return evalStringInfixExpression(operator, left, right)
+	}
+
 	if left.Type() != right.Type() {
 		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
+	}
+
+	return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+}
+
+func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
+	switch operator {
+	case token.PLUS:
+		return &object.String{Value: left.(*object.String).Value + right.(*object.String).Value}
 	}
 
 	return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
