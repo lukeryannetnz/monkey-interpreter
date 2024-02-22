@@ -109,3 +109,31 @@ func TestCallExpressionString(t *testing.T) {
 		t.Fatalf("string not correct. expected=foo(bar), got=%s", ce.String())
 	}
 }
+
+func TestFunctionLiteralString(t *testing.T) {
+	ce := &FunctionLiteral{
+		Token: token.Token{Type: token.FUNCTION, Literal: "fn"},
+		Parameters: []*Identifier{
+			{
+				Token: token.Token{Type: token.IDENT, Literal: "foo"},
+				Value: "foo",
+			},
+		},
+		Body: &BlockStatement{
+			Token: token.Token{Type: token.LBRACE, Literal: "{"},
+			Statements: []Statement{
+				&ExpressionStatement{
+					Token: token.Token{Type: token.IDENT, Literal: "bar"},
+					Value: &StringLiteral{
+						Token: token.Token{Type: token.IDENT, Literal: "bar"},
+						Value: "bar",
+					},
+				},
+			},
+		},
+	}
+
+	if ce.String() != "fn(foo){ bar }" {
+		t.Fatalf("string not correct. expected=fn(foo){ bar }, got=%s", ce.String())
+	}
+}

@@ -237,14 +237,17 @@ func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
 func (fl *FunctionLiteral) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("(")
-	for _, p := range fl.Parameters {
+	out.WriteString("fn(")
+	for i, p := range fl.Parameters {
 		out.WriteString((p.Value))
-		out.WriteString(", ")
+		if i > 0 {
+			out.WriteString(", ")
+		}
 	}
 	out.WriteString(")")
+	out.WriteString("{ ")
 	out.WriteString(fl.Body.String())
-
+	out.WriteString(" }")
 	return out.String()
 }
 
