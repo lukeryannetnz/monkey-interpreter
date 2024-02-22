@@ -19,7 +19,7 @@ const (
 	LOWEST
 	EQUALS      // ==
 	LESSGREATER // > or <
-	SUM         // +
+	SUM         // + -
 	PRODUCT     // *
 	PREFIX      // -X or !X
 	CALL        // function(X)
@@ -274,7 +274,6 @@ func (p *Parser) parseBooleanExpression() ast.Expression {
 
 func (p *Parser) parseStringExpression() ast.Expression {
 	exp := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
-	p.nextToken()
 
 	return exp
 }

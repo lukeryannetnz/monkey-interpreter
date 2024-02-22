@@ -125,6 +125,7 @@ func (l *Lexer) readString() string {
 
 		peek := l.peekChar()
 		if isQuote(peek) {
+			l.readChar()
 			return literal
 		}
 

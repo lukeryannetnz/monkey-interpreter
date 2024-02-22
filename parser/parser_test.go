@@ -277,7 +277,7 @@ func TestInfixExpressions(t *testing.T) {
 		testNoErrors(t, p)
 
 		if len(program.Statements) != 1 {
-			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+			t.Fatalf("program has incorrect number of statements. got=%d", len(program.Statements))
 		}
 
 		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
