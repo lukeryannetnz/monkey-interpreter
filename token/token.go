@@ -29,6 +29,8 @@ var delimiters = map[string]TokenType{
 	")": RPAREN,
 	"{": LBRACE,
 	"}": RBRACE,
+	"[": LBRACKET,
+	"]": RBRACKET,
 }
 
 func New(tokenType TokenType, ch byte) Token {
@@ -81,6 +83,8 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	LBRACKET  = "["
+	RBRACKET  = "]"
 
 	// Keywords
 	FUNCTION = "FUNCTION"
