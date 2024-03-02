@@ -137,3 +137,25 @@ func TestFunctionLiteralString(t *testing.T) {
 		t.Fatalf("string not correct. expected=fn(foo){ bar }, got=%s", ce.String())
 	}
 }
+
+func TestArrayLiteralString(t *testing.T) {
+	sut := &ArrayLiteral{
+		Token: token.Token{},
+		Elements: []Expression{
+			&StringLiteral{
+				Token: token.Token{Type: token.IDENT, Literal: "foo"},
+				Value: "foo",
+			},
+			&StringLiteral{
+				Token: token.Token{Type: token.IDENT, Literal: "bar"},
+				Value: "bar",
+			},
+		},
+	}
+
+	result := sut.String()
+
+	if result != "[foo, bar]" {
+		t.Fatalf("string not as expected. expected:[foo, bar] got:%s", result)
+	}
+}
