@@ -75,6 +75,12 @@ func Eval(node ast.Node, environment *object.Environment) object.Object {
 		return &object.Function{Parameters: node.Parameters, Body: node.Body, Env: environment}
 	case *ast.CallExpression:
 		return evalCallStatement(node, environment)
+	case *ast.ArrayLiteral:
+		elements := evalExpressions(node.Elements, environment)
+		if len(elements) == 1 && isError(elements[0]) {
+			return elements[0]
+		}
+		return &object.Array{Elements: elements}
 	}
 
 	return nil
