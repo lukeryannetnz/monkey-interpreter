@@ -89,7 +89,7 @@ _repl_ - a runtime command line read evaluate print loop for monkey source code
 |Right parenthesis delimiter |✅|✅|✅|
 |Left brace delimiter |✅|✅|✅|
 |Right brace delimiter |✅|✅|✅|
-|Function literals |✅|✅| |
+|Function literals |✅|✅|✅ |
 |Let keyword |✅|✅|✅|
 |True keyword |✅|✅|✅|
 |False keyword |✅|✅|✅|
