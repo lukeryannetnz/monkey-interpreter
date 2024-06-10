@@ -77,6 +77,8 @@ func (l *Lexer) NextToken() token.Token {
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = l.readString()
+	case ':':
+		tok = token.New(token.COLON, l.ch)
 	default:
 		literal := l.readLiteral()
 		tok = token.FindTokenType(literal)
