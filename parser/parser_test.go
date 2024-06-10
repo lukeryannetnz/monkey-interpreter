@@ -841,3 +841,39 @@ func TestParsingHashLiteralsWithExpressions(t *testing.T) {
 		testFunc(value)
 	}
 }
+
+func TestParsingHashLiteralsWithIntegerKey(t *testing.T) {
+	input := `{1 : 2}`
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	testNoErrors(t, p)
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	hash, ok := stmt.Value.(*ast.HashLiteral)
+
+	if !ok {
+		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Value)
+	}
+
+	tests := map[int64]func(ast.Expression){
+		1: func(e ast.Expression) {
+			testIntegerLiteral(t, e, int64(2))
+		},
+	}
+
+	for key, value := range hash.Pairs {
+		literal, ok := key.(*ast.IntegerLiteral)
+		if !ok {
+			t.Errorf("key not ast.IntegerLiteral. got=%T", key)
+		}
+
+		testFunc, ok := tests[literal.Value]
+		if !ok {
+			t.Errorf("no test function for key %d found", literal.Value)
+			continue
+		}
+
+		testFunc(value)
+	}
+}
