@@ -63,7 +63,7 @@ _lexer_ - converts fragments of the monkey programming language into tokens
 
 _parser_ - syntactically analyses and convert tokens of the monkey programming language into an abstract syntax tree (AST) data structure
 
-_evaluator_ - executes monkey source code in AST structure using a tree walking interpreter
+_evaluator_ - executes monkey source code in AST structure using a tree walking interpreter (depth-first)
 
 _repl_ - a runtime command line read evaluate print loop for monkey source code
 
